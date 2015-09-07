@@ -1,7 +1,7 @@
 var taskInput = document.getElementById('new-task');
 var addButton = document.getElementsByTagName('button')[0];
-var incompleteTaskHolder = document.getElementById('incomplete-tasks');
-var completedTaskHolder = document.getElementById('completed-tasks');
+var incompleteTasksHolder = document.getElementById('incomplete-tasks');
+var completedTasksHolder = document.getElementById('completed-tasks');
 
 //New Task List Item
 var createNewTaskElement = function(taskString) {
@@ -12,12 +12,25 @@ var createNewTaskElement = function(taskString) {
     //label
     var label = document.createElement("label");
     //input (text)
-    var editInpute = document.createElement("input");
+    var editInput = document.createElement("input");
     //button.edit
     var editButton = document.createElement("button");
     //button.delete
     var deleteButton = document.createElement("button");
-    //Each elements, need modified and appended
+    //Each element needs modifying
+    checkBox.type = "checkbox";
+    editInput.type = "text";
+    editButton.innerText = "Edit";
+    editButton.className = "edit";
+    deleteButton.innerText = "Delete";
+    deleteButton.className = "delete";
+
+    //appending
+    listItem.appendChild(checkBox);
+    listItem.appendChild(label);
+    listItem.appendChild(editInput);
+    listItem.appendChild(editButton);
+    listItem.appendChild(deleteButton);
 
     return listItem;
 }
@@ -25,10 +38,10 @@ var createNewTaskElement = function(taskString) {
 //Add a new task
 var addTask = function() {
     //Create a new list item with the text from #new-task:
-    var listItem = createNewTaskElement("A New Task");
-
-    //Append listItem to incompleteTaskHolder
-
+    var listItem = createNewTaskElement(taskInput.value);
+    //Append listItem to incompleteTasksHolder
+    incompleteTasksHolder.appendChild(listItem);
+    bindTaskEvents(listItem, taskCompleted);
 }
 //Edit an existing task
 var editTask = function() {
@@ -44,21 +57,28 @@ var editTask = function() {
 }
 //Delete an existing task
 var deleteTask = function() {
-    //When the Delete button is pressed
-        //Remove the parent list item from the unordered list
+    var listItem = this.parentNode;
+    var ul = listItem.parentNode;
+    //Remove the parent list item from the ul
+    ul.removeChild(listItem);
 }
 //Mark a task as complete
 var taskCompleted = function() {
-    //When the Checkbox is Checked
-        //Append the task list item to the #completed-tasks
+    //Append the task list item to the #completed-tasks
+    var listItem = this.parentNode;
+    completedTasksHolder.appendChild(listItem);
+    bindTaskEvents(listItem, taskIncomplete);
+
 }
 //Mark a task as incomplete
 var taskIncomplete = function() {
-    //When the checkbox is unchecked
-        //Append the task list item to the #completed-tasks
+    //Append the task list item to the #completed-tasks
+    var listItem = this.parentNode;
+    incompleteTasksHolder.appendChild(listItem);
+    bindTaskEvents(listItem, TaskCompleted);
 }
 
-var bindTaskEvents(taskListItem, checkboxEventHandler) {
+var bindTaskEvents = function(taskListItem, checkBoxEventHandler) {
     //select taskListItem's it's children
     var checkBox = taskListItem.querySelector("input[type=checkbox]");
     var editButton = taskListItem.querySelector("button.edit");
@@ -76,13 +96,13 @@ var bindTaskEvents(taskListItem, checkboxEventHandler) {
 addButton.onclick = addTask;
 
 //Cycle through the incompletTaskHolder ul list items
-for(var i = 0; i < incomleteTasksHolder.children.length; i++) {
+for(var i = 0; i < incompleteTasksHolder.children.length; i++) {
     //bind events to list item's children (taskCompleted)
     bindTaskEvents(incompleteTasksHolder.children[i], taskCompleted);
 }
 
 //Cycle through the compledTaskHolder ul list items
-for(var i = 0; i < comletedTasksHolder.children.length; i++) {
+for(var i = 0; i < completedTasksHolder.children.length; i++) {
     //bind events to list item's children (taskCompleted)
     bindTaskEvents(completedTasksHolder.children[i], taskIncomplete);
 }
